@@ -1,0 +1,17 @@
+{	
+    "authenticationMethod": "route",
+      "routes":[
+          {
+              "source": "travel-extern/(.*)$",
+              "authenticationType": "xsuaa",
+              "scope": "$XSAPPNAME.Viewer",
+              "destination": "srv"          
+          },
+          {
+              "source": "^/v2/travel-extern/(.*)$",
+              "authenticationType": "xsuaa",
+              "scope": "$XSAPPNAME.Viewer",
+              "destination": "srv" 
+          }
+      ]
+  }

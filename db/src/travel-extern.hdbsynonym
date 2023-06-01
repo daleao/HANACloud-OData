@@ -1,0 +1,14 @@
+{
+    "ODATA_DB_TRAVEL_EXTERN_SY_Customers": {
+        "target": {
+            "object": "travel.extern::CVCustomers",
+            "schema": "_PLACEHOLDER_"
+        }
+    },
+    "ODATA_DB_TRAVEL_EXTERN_SY_Loyalty": {
+        "target": {
+            "object": "travel.extern::CVLoyalty",
+            "schema": "_PLACEHOLDER_"
+        }
+    }
+}

@@ -1,0 +1,51 @@
+{
+  "name": "odata",
+  "version": "1.0.0",
+  "description": "OData service for Travel data.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^6.8",
+    "@sap/xsenv": "^3.4.0",
+    "@sap/xssec": "^3.2.17",
+    "express": "^4",
+    "hdb": "^0.19",
+    "passport": "^0.6.0"
+  },
+  "devDependencies": {
+    "sqlite3": "^5"
+  },
+  "scripts": {
+    "start": "cds-serve"
+  },
+  "cds": {
+    "requires": {
+      "db": "hana-cloud",
+      "uaa": {
+        "kind": "xsuaa"
+      },
+      "auth": {
+        "[production]": {
+          "strategy": "JWT"
+        },
+        "[development]": {
+          "strategy": "mock",
+          "users": {
+            "joe": {
+              "roles": [
+                "Admin",
+                "Viewer"
+              ]
+            },
+            "julie": {
+              "roles": [
+                "Viewer"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

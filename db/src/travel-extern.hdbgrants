@@ -1,0 +1,14 @@
+{
+    "travel-extern": {
+        "object_owner": {
+            "container_roles": [
+                "travel.extern::EXTERNAL_ACCESS_G#"
+            ]
+        },
+        "application_user": {
+            "container_roles": [
+                "travel.extern::EXTERNAL_ACCESS"
+            ]
+        }
+    }
+}

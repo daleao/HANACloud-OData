@@ -1,0 +1,110 @@
+_schema-version: '3.2'
+ID: odata
+version: 1.0.0
+description: "OData service for Travel data."
+
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx -p @sap/cds-dk cds build --production
+
+modules:
+  # ------------------ APP ROUTER MODULE -----------------------
+  - name: odata-app
+  # ------------------------------------------------------------
+    type: approuter.nodejs
+    path: app
+    build-parameters:
+      ignore:
+        - default-*.json
+        - .env
+        - "*node_modules*"
+        - package-lock.json
+    parameters:
+      memory: 256M
+      disk-quota: 1024M
+    requires:
+      - name: odata-uaa
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv
+          url: ~{srv-url}
+          timeout: 600000
+          forwardAuthToken: true
+
+  # ---------------- DATABASE DEPLOYER MODULE ------------------
+  - name: odata-db-deployer
+  # ------------------------------------------------------------
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 256M
+      disk-quota: 1024M
+    build-parameters:
+      ignore:
+        - default-*.json
+        - .env
+        - "*node_modules*"
+        - package-lock.json
+    properties:
+      TARGET_CONTAINER: odata-db
+    requires:
+      - name: odata-uaa
+      - name: odata-db
+      - name: travel-extern
+
+  # --------------------- SERVER MODULE ------------------------
+  - name: odata-srv
+  # ------------------------------------------------------------
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 512M
+      disk-quota: 1024M
+    build-parameters:
+      builder: npm-ci
+      ignore:
+        - default-*.json
+        - .env
+        - "*node_modules*"
+        - package-lock.json
+    requires:
+      - name: odata-db
+      - name: odata-uaa
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+
+resources:
+  # ----------------------- UAA SERVICE ------------------------
+  - name: odata-uaa
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+
+  # ------------------- HDI CONTAINER SERVICE ------------------
+  - name: odata-db
+  # ------------------------------------------------------------
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+ # -------------- EXISTING HDI CONTAINER SERVICE --------------
+  - name: travel-extern
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.existing-service
+    parameters:
+      service-name: travel-extern

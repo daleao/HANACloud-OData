@@ -1,0 +1,63 @@
+{
+    "xsappname": "odata",
+    "tenant-mode": "dedicated",
+    "scopes": [
+        {
+            "name": "uaa.user",
+            "description": "UAA"
+        },
+        {
+            "name": "$XSAPPNAME.Viewer",
+            "description": "Viewer"
+        },
+        {
+            "name": "$XSAPPNAME.Admin",
+            "description": "Administrator"
+        }
+    ],
+    "role-templates": [
+        {
+            "name": "TOKEN_EXCHANGE",
+            "description": "UAA Token Exchange",
+            "scope-references": [
+                "uaa.user"
+            ]
+        },
+        {
+            "name": "Viewer",
+            "description": "Viewer",
+            "scope-references": [
+                "$XSAPPNAME.Viewer"
+            ]
+        },
+        {
+            "name": "Admin",
+            "description": "Administrator",
+            "scope-references": [
+                "$XSAPPNAME.Admin"
+            ]
+        }
+    ],
+    "role-collections": [
+        {
+            "name": "OData_Viewer",
+            "description": "Viewer access",
+            "role-template-references": [
+                "$XSAPPNAME.Viewer"
+            ]
+        },
+        {
+            "name": "OData_Administrator",
+            "description": "Administrative access",
+            "role-template-references": [
+                "$XSAPPNAME.Admin"
+            ]
+        }
+    ],
+    "oauth2-configuration": {
+        "token-validity": 3600,
+        "redirect-uris": [
+            "https://*-odata-app.cfapps.*.hana.ondemand.com/login/callback"
+        ]
+    }
+}
